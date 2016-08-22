@@ -5,7 +5,5 @@ define(['app'],function (app) {
         $scope.name = 'pageA';
 
         $scope.status = demo.status;
-
-        $scope.$emit('loaded');
     }]);
 });

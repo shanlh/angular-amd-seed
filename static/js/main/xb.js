@@ -39,10 +39,13 @@ define(['angular'],function(angular){
                 });
                 scope.$on('loading',function(){
                     element.removeClass('hide');
-                });
+                }); 
                 scope.$on('$stateChangeStart', function () {
                     element.removeClass('hide');
                 });
+                scope.$on('$viewContentLoading',function(){
+                	element.addClass('hide');
+                })
             }
         };
     }]);
