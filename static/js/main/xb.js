@@ -27,7 +27,7 @@ define(['angular'],function(angular){
 								
 							}else{
 								// 其他错误码
-								alert(data.msg);
+								$rootScope.$broadcast('xb-tip',data.msg);
 								d.reject(data);
 								$rootScope.$broadcast('loaded');
 							}
@@ -69,6 +69,25 @@ define(['angular'],function(angular){
                 scope.$on('$viewContentLoading',function(){
                 	element.addClass('hide');
                 })
+            }
+        };
+    }]);
+	app.directive('tips',['$timeout',function($timeout) {
+        return {
+            restrict:'E',
+            link:function(scope,element){
+                scope.$on('xbtips',function(event,data){
+                	element.text(data);
+                	element.removeClass('hide');
+					element.addClass('tips-show');
+					if(element.timeout){
+						$timeout.cancel(element.timeout);
+					}
+					element.timeout = $timeout(function(){
+						element.addClass('hide');
+						element.removeClass('tips-show');
+					},1500)
+                }); 
             }
         };
     }]);
