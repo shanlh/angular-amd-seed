@@ -2,23 +2,46 @@ define(['angular'],function(angular){
 	var app = angular.module('xb', []);
 	app.service('xb',['$http','$q','$rootScope', function ($http,$q,$rootScope) {
 		return {
-			get:function(url,param){
+			http:function(method,url,param){
+				method = method.toUpperCase();
 				var d = $q.defer();
-					$http.get(url,param)
-					.success(function(data){
-						if(data.error==0){
-							setTimeout(function(){
-								d.resolve(data) ;	
-							},1000);
-						}else if(data.error==2000){
-							// 需要登录,此处跳转
-							
+					$rootScope.$broadcast('loading');
+					$http({
+						method: method,
+						url: url,
+						data: param
+					}).then(function(response) {
+						var data = response.data;
+						var status = response.status;
+						if(method == 'JSONP'){
+							d.resolve(response.data);
+							$rootScope.$broadcast('loaded');
 						}else{
-							alert(data.msg);
-						}			
-					})
-					.error(function(r){
-						alert("网络繁忙");
+							if(data.error==0){
+								setTimeout(function(){
+									d.resolve(data.data);
+									$rootScope.$broadcast('loaded');
+								},1000);
+							}else if(data.error==2000){
+								// 需要登录,此处跳转
+								
+							}else{
+								// 其他错误码
+								alert(data.msg);
+								d.reject(data);
+								$rootScope.$broadcast('loaded');
+							}
+						}
+					}, function(response) {
+						var status = response.status;
+						var data = response.data || "Request failed";
+						if(status == -1){
+							// offline
+							alert("offline");
+						}else if(status == 404){
+							// 404
+							alert("404");
+						}
 						$rootScope.$broadcast('loaded');
 					});
 				return d.promise ;

@@ -22,7 +22,7 @@ define(['app','require'],function(app,require){
                 dependencies: [serviceUrl+'demo.js'],
                 resolve:{
                     r:['xb',function(xb){
-                        return xb.get('/demo.json');
+                        return xb.http('GET','/demo.json');
                     }]
                 }
             })

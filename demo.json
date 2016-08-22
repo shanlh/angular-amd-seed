@@ -1,6 +1,6 @@
 {
 	"error":"0",
 	"data":{
-		"hello":"world"
+		"status":"这个接口是返回成功的"
 	}
 }
