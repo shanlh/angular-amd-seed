@@ -27,7 +27,7 @@ define(['angular'],function(angular){
 								
 							}else{
 								// 其他错误码
-								$rootScope.$broadcast('xb-tip',data.msg);
+								$rootScope.$broadcast('tip',data.msg);
 								d.reject(data);
 								$rootScope.$broadcast('loaded');
 							}
@@ -45,40 +45,44 @@ define(['angular'],function(angular){
 						$rootScope.$broadcast('loaded');
 					});
 				return d.promise ;
-	    	}
+			}
 		}
 	}]);
-	app.directive('loading',[function() {
-        return {
-            restrict:'E',
-            template:   '<div class="load-container">'+
-                            '<span>'+
-                                '<img src="https://static-hilava-com.alikunlun.com/static/yingxiao/jiakaointro/loading.png">'+
-                            '</span>'+
-                        '</div>',
-            link:function(scope,element){
-                scope.$on('loaded',function(){
-                    element.addClass('hide');
-                });
-                scope.$on('loading',function(){
-                    element.removeClass('hide');
-                }); 
-                scope.$on('$stateChangeStart', function () {
-                    element.removeClass('hide');
-                });
-                scope.$on('$viewContentLoading',function(){
-                	element.addClass('hide');
-                })
-            }
-        };
-    }]);
-	app.directive('tips',['$timeout',function($timeout) {
-        return {
-            restrict:'E',
-            link:function(scope,element){
-                scope.$on('xbtips',function(event,data){
-                	element.text(data);
-                	element.removeClass('hide');
+	app.directive('xbloading',[function() {
+		return {
+			restrict:'E',
+			replace :true,
+			template:   '<div class="xbloading-container">'+
+							'<span>'+
+								'<img src="https://static-hilava-com.alikunlun.com/static/yingxiao/jiakaointro/loading.png">'+
+							'</span>'+
+						'</div>',
+			link:function(scope,element){
+				scope.$on('loaded',function(){
+					element.addClass('hide');
+				});
+				scope.$on('loading',function(){
+					element.removeClass('hide');
+				}); 
+				scope.$on('$stateChangeStart', function () {
+					element.removeClass('hide');
+				});
+				scope.$on('$viewContentLoading',function(){
+					element.addClass('hide');
+				})
+			}
+		};
+	}]);
+	app.directive('xbtips',['$timeout',function($timeout) {
+		return {
+			restrict:'E',
+			replace :true,
+			template:'<span class="xbtips hide"></span>',
+			link:function(scope,element){
+				scope.$on('tip',function(event,data){
+					console.log("in");
+					element.text(data);
+					element.removeClass('hide');
 					element.addClass('tips-show');
 					if(element.timeout){
 						$timeout.cancel(element.timeout);
@@ -87,8 +91,8 @@ define(['angular'],function(angular){
 						element.addClass('hide');
 						element.removeClass('tips-show');
 					},1500)
-                }); 
-            }
-        };
-    }]);
+				}); 
+			}
+		};
+	}]);
 });
